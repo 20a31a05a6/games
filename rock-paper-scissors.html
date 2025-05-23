@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rock Paper Scissors</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-black min-h-screen flex flex-col items-center justify-center text-white font-sans">
+
+  <div class="text-center space-y-6">
+    <h1 class="text-4xl font-extrabold text-purple-300 animate-pulse drop-shadow-lg">Rock Paper Scissors</h1>
+
+    <div class="flex justify-center gap-4">
+      <button class="choice-btn bg-white/20 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded-xl shadow transition backdrop-blur-sm" data-choice="rock">✊ Rock</button>
+      <button class="choice-btn bg-white/20 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded-xl shadow transition backdrop-blur-sm" data-choice="paper">✋ Paper</button>
+      <button class="choice-btn bg-white/20 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded-xl shadow transition backdrop-blur-sm" data-choice="scissor">✌️ Scissors</button>
+    </div>
+
+    <div class="mt-6 bg-white/10 backdrop-blur-md p-6 rounded-3xl w-80 shadow-lg space-y-2 text-lg">
+      <p id="status" class="text-center font-semibold">Choose to start!</p>
+      <p>👤 You: <span id="playerScore" class="text-green-400 font-bold">0</span></p>
+      <p>🤖 System: <span id="computerScore" class="text-red-400 font-bold">0</span></p>
+      <p>System chose: <span id="systemChoice" class="font-semibold text-purple-300">-</span></p>
+    </div>
+
+    <button id="restart" class="mt-4 hidden bg-purple-600 px-4 py-2 rounded-lg hover:bg-purple-700">Restart Game</button>
+  </div>
+
+  <script>
+    const choices = ["rock", "paper", "scissor"];
+    let pScore = 0;
+    let cScore = 0;
+    const limit = 5;
+
+    const playerScoreEl = document.getElementById("playerScore");
+    const computerScoreEl = document.getElementById("computerScore");
+    const statusEl = document.getElementById("status");
+    const systemChoiceEl = document.getElementById("systemChoice");
+    const restartBtn = document.getElementById("restart");
+
+    document.querySelectorAll(".choice-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (pScore === limit || cScore === limit) return;
+
+        const playerChoice = btn.dataset.choice;
+        const systemChoice = choices[Math.floor(Math.random() * 3)];
+        systemChoiceEl.textContent = systemChoice;
+
+        if (
+          (playerChoice === "rock" && systemChoice === "scissor") ||
+          (playerChoice === "scissor" && systemChoice === "paper") ||
+          (playerChoice === "paper" && systemChoice === "rock")
+        ) {
+          pScore++;
+          statusEl.textContent = "✅ You win this round!";
+        } else if (playerChoice === systemChoice) {
+          statusEl.textContent = "🤝 It's a draw!";
+        } else {
+          cScore++;
+          statusEl.textContent = "❌ System wins this round!";
+        }
+
+        playerScoreEl.textContent = pScore;
+        computerScoreEl.textContent = cScore;
+
+        if (pScore === limit || cScore === limit) {
+          statusEl.textContent = pScore > cScore ? "🎉 You win the game!" : "💻 System wins the game!";
+          restartBtn.classList.remove("hidden");
+        }
+      });
+    });
+
+    restartBtn.addEventListener("click", () => {
+      pScore = 0;
+      cScore = 0;
+      playerScoreEl.textContent = "0";
+      computerScoreEl.textContent = "0";
+      statusEl.textContent = "Choose to start!";
+      systemChoiceEl.textContent = "-";
+      restartBtn.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
